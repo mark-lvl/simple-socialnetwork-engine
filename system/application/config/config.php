@@ -308,7 +308,7 @@ $config['time_reference'] = 'local';
 | in your view files.  Options are TRUE or FALSE (boolean)
 |
 */
-$config['rewrite_short_tags'] = FALSE;
+$config['rewrite_short_tags'] = TRUE;
 
 
 /*
@@ -323,6 +323,19 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Core initialize values
+|--------------------------------------------------------------------------
+| config the PARSPAKE core values for used this framework
+|
+*/
+$config['_core_user_table_name'] = "users";
+$config['_core_auth_identify_field'] = "username";
+$config['_core_auth_password_field'] = "password";
 
 
 /* End of file config.php */

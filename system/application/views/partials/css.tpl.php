@@ -1,1 +1,1 @@
-<link href="<?php echo base_url() . 'css/' . $filename . '.css'; ?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo base_url() . '../public/css/' . $filename . '.css'; ?>" rel="stylesheet" type="text/css" />

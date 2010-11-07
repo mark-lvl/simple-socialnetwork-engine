@@ -9,14 +9,22 @@ class Base_Controller extends Controller {
     public function __construct()
     {
         parent::__construct();
+
+        $this->lang->load('heading','persian');
+        $this->lang->load('titles','persian');
+        $this->lang->load('errors','persian');
+        $this->data['lang'] = $this->lang->language;
+
         $this->load_defaults();
         }
 
     protected function load_defaults() {
-        $this->data['heading'] = 'Page Heading';
+        $this->data['heading'] = '';
         $this->data['content'] = '';
         $this->data['css'] = '';
         $this->data['title'] = 'Page Title';
+
+        $this->add_css('main');
 
         $this->controller_name = $this->router->fetch_directory() . $this->router->fetch_class();
         $this->action_name = $this->router->fetch_method();

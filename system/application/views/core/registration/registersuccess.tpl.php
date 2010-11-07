@@ -1,0 +1,1 @@
+<?= $lang['content_register_successfull'] ?>
