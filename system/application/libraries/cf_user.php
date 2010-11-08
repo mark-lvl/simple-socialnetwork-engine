@@ -33,6 +33,11 @@ class Cf_user {
                 return 'notUnique';
         }
 
+        /**
+	 * check the user email is unique
+	 * @param <STRING> $email
+	 * @return <BOOL> unique/notUnique
+	 */
         function unique_email($email)
         {
             $query = $this->ci->db->get_where($this->_userTable, array('email' => $email));
@@ -40,6 +45,48 @@ class Cf_user {
                 return FALSE;
             else
                 return TRUE;
+        }
+
+        /**
+	 * get user friends
+	 * @param <OBJECT> $user
+	 * @param <INT> $limit number of returned friends
+	 * @return <ARRAY> list of returned friends
+	 */
+        function get_user_friends($user, $limit = "", $offset = "")
+        {
+            if(!is_object($user))
+                return FALSE;
+
+            $this->ci->load->model('core/cf_user_model');
+
+            return $this->ci->cf_user_model->get_friends($user, $limit, $offset);
+        }
+
+        /**
+	 * get user by the user_id
+	 * @param <INT> $id
+	 * @param <STRING> $tableName the name of user's table
+	 * @return <ARRAY> the user object
+	 */
+        function get_user_by_id($id, $tableName)
+        {
+            $this->ci->load->model('core/cf_user_model');
+
+            return $this->ci->cf_user_model->get_user_by_id($id, $tableName);
+        }
+
+        /**
+	 * get a user relation with another user
+	 * @param <INT> $user the first user
+	 * @param <INT> $anotherUser the next user
+	 * @return <STRING> status of the relation
+	 */
+        function get_relation_status($user, $anotherUser)
+        {
+            $this->ci->load->model('core/cf_user_model');
+            
+            return $this->ci->cf_user_model->get_relation_status($user, $anotherUser);
         }
 
 }

@@ -29,7 +29,7 @@ class Cf_authentication {
 	function login($username, $password)
         {
             //is user session is available reject login
-            if($this->ci->session->userdata('session_id'))
+            if($this->ci->session->userdata('logged_in'))
                     return TRUE;
             else
             {
@@ -43,14 +43,11 @@ class Cf_authentication {
                 if (!$user) 
                         return FALSE;
 
-                $userdata = array(
-                                'id' => $user->id,
-                                'email' => $user->email,
-                                'last_login_date' => $user->last_login_date,
-                                'logged_in' => TRUE
-                                );
+                $user->logged_in = TRUE;
 
-                $this->ci->session->set_userdata($userdata);
+                $user_data = (array) $user;
+
+                $this->ci->session->set_userdata($user_data);
 
                 return TRUE;
             }
@@ -61,23 +58,23 @@ class Cf_authentication {
 	 * @param <STRING> $password
 	 * @return <OBJECT> User object, <BOOLEAN> FALSE if no user found
 	 */
-	function is_user($username = "", $password = "") {
-		if (!$username && !$password) {
-			if ($this->ci->session->userdata('logged_in')) {
-				return TRUE;
-			}
-		}
-		if ($username == $this->ci->session->userdata('email') && $this->ci->session->userdata('logged_in')) {
-			return $result;
-		} else {
-			$this->ci->load->library("cf_security");
+	function is_user($username = "", $password = "")
+        {
+            if (!$username && !$password)
+            {
+                if ($this->ci->session->userdata('logged_in'))
+                    return (object) $this->ci->session->userdata;
+            }
+            if ($username == $this->ci->session->userdata('email') && $this->ci->session->userdata('logged_in'))
+                return (object) $this->ci->session->userdata;
+            else
+            {
+                $this->ci->load->library("cf_security");
 
-			$sob = new Cf_security();
-			if ($sob->check_hash($password, $result->password)) {
-				//User is valid!
-				return $result;
-			}
-			return FALSE; //Password is wrong!
-		}
+                $sob = new Cf_security();
+                if ($sob->check_hash($password, $this->ci->session->userdata('password')))
+                    return (object) $this->ci->session->userdata;
+                return FALSE; //Password is wrong!
+            }
 	}
 }

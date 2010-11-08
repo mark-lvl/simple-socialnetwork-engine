@@ -14,6 +14,7 @@ body
 	text-align:right;
 	width:640px;
         padding: 15px;
+        overflow: auto;
 }
 
 #top
@@ -489,3 +490,31 @@ textarea.large
 	width:99%;
 }
 
+/**** main ****/
+.profile_container
+{
+	background:#fff;
+	margin:0 auto;
+	text-align:right;
+	width:925px;
+        padding: 15px;
+        overflow: auto;
+}
+
+.profile_user_box
+{
+    background: #EEEEEE;
+    width: 200px;
+    float: right;
+    border: 1px dotted gray;
+    height: 100px;
+}
+
+.user_friends
+{
+    background: #EEEEEE;
+    width: 200px;
+    float: left;
+    border: 1px dotted gray;
+    height: 100px;
+}

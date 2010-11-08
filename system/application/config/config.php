@@ -123,7 +123,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-=';
 
 
 /*
@@ -206,7 +206,8 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 | system/cache/ folder.  Use a full server path with trailing slash.
 |
 */
-$config['cache_path'] = '';
+$config['cache_dir'] = '/var/www/codeigniter/system/cache';
+$config['cache_default_expires'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -231,11 +232,11 @@ $config['encryption_key'] = "";
 | 'time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']		= 'ci_session';
+$config['sess_cookie_name']		= 'parspake_session';
 $config['sess_expiration']		= 7200;
-$config['sess_encrypt_cookie']	= FALSE;
-$config['sess_use_database']	= FALSE;
-$config['sess_table_name']		= 'ci_sessions';
+$config['sess_encrypt_cookie']	= TRUE;
+$config['sess_use_database']	= TRUE;
+$config['sess_table_name']		= 'sessions';
 $config['sess_match_ip']		= FALSE;
 $config['sess_match_useragent']	= TRUE;
 $config['sess_time_to_update'] 	= 300;
@@ -334,6 +335,10 @@ $config['proxy_ips'] = '';
 |
 */
 $config['_core_user_table_name'] = "users";
+
+//number of user that show in the profile page
+$config['_core_profile_number_freinds'] = 4;
+
 $config['_core_auth_identify_field'] = "username";
 $config['_core_auth_password_field'] = "password";
 
