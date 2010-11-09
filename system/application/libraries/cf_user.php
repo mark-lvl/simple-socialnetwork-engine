@@ -77,10 +77,10 @@ class Cf_user {
         }
 
         /**
-	 * get a user relation with another user
-	 * @param <INT> $user the first user
-	 * @param <INT> $anotherUser the next user
-	 * @return <STRING> status of the relation
+	 * get user status relation with other user
+	 * @param <INT> $user id of authenticated user
+	 * @param <INT> $anotherUser id of partner user
+	 * @return <BOOL> true if is related
 	 */
         function get_relation_status($user, $anotherUser)
         {

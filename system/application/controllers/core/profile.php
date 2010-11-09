@@ -10,6 +10,10 @@ class Profile extends Base_Controller {
     function Profile() {
         parent::__construct();
         $this->_userTable =  $this->config->item('_core_user_table_name');
+
+        $this->lang->load('content','persian');
+        $this->lang->load('labels','persian');
+        $this->lang->load('core','persian');
     }
 
     function index()
@@ -23,8 +27,6 @@ class Profile extends Base_Controller {
         if(!$this->data['user'])
             redirect('core/registration/login');
 
-        $this->lang->load('content','persian');
-        $this->lang->load('labels','persian');
 
         $this->data['lang'] = $this->lang->language;
         $this->data['title'] = $this->data['lang']['title_profile'];
@@ -43,21 +45,24 @@ class Profile extends Base_Controller {
             redirect('core/profile');
 
         //the partner user profile details
-        $this->data['partner'] = $this->cf_user->get_user_by_id(base64_decode($hashedId), $this->_userTable);
+        $this->data['partner'] = $this->cf_user->get_user_by_id(base64_decode($hashedId),
+                                                                $this->_userTable);
 
-        $this->data['friends'] = $this->cf_user->get_user_friends($this->data['partner'], $this->config->item('_core_profile_number_freinds'));
+        $this->data['friends'] = $this->cf_user->get_user_friends($this->data['partner'],
+                                                                  $this->config->item('_core_profile_number_freinds'));
 
         //status between the logged_user and partner
-        $this->data['relation_status'] = $this->cf_user->get_relation_status(base64_decode($hashedId), $this->data['user']->id);
+        $this->data['relation_status'] = $this->cf_user->get_relation_status($this->data['user']->id,
+                                                                             base64_decode($hashedId));
 
         if(!$this->data['user'])
             redirect('core/registration/login');
 
-        $this->lang->load('content','persian');
-        $this->lang->load('labels','persian');
-
         $this->data['lang'] = $this->lang->language;
-        $this->data['title'] = $this->data['lang']['title_profile'];
+
+        $this->data['title'] = str_replace('__NAME__',
+                                           $this->data['partner']->first_name ,
+                                           $this->data['lang']['title_profile_partner']);
 
         $this->render();
     }

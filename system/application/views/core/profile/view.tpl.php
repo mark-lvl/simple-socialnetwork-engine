@@ -8,8 +8,23 @@
         </div>
     </div>
     <div class="user_friends">
-        <?php foreach($friends AS $f): ?>
+        <?php
+        if(is_array($friends))
+        foreach($friends AS $f): ?>
             <?= anchor('core/profile/view/'.base64_encode($f->id), $f->first_name." ".$f->last_name) ?><br/>
         <?php endforeach; ?>
+    </div>
+    <div class="social_action">
+        <?php if($relation_status == 'waiting'): ?>
+            <?= $lang['core_social_wait_for_accept'] ?>
+        <?php elseif($relation_status == 'waitForMe'): ?>
+            <?= $lang['core_social_wait_for_accept_by_me'] ?>
+        <?php elseif($relation_status == 'related'): ?>
+            <?= $lang['core_social_related'] ?>
+        <?php elseif($relation_status == 'reject'): ?>
+            <?= $lang['core_social_rejected_request'] ?>
+        <?php elseif($relation_status == 'request'): ?>
+            <?= $lang['core_social_request_friend'] ?>
+        <?php endif; ?>
     </div>
 </div>

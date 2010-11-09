@@ -59,10 +59,13 @@ class Cf_user_model extends Model {
                 $sql = "SELECT A.id AS fake_id, B.* FROM `relations` A, `users` B
                         WHERE A.`inviter` = " . $this->db->escape($user) . "
                         AND B.id = A.`guest`
+                        AND A.`status` = 1
                         UNION
                         SELECT A.id AS fake_id, B.* FROM `relations` A, `users` B
                         WHERE A.`guest` = " . $this->db->escape($user) . "
-                        AND B.id = A.`inviter` ".$limitString;
+                        AND B.id = A.`inviter`
+                        AND A.`status` = 1
+                        ".$limitString;
 
                 $query = $this->db->query($sql);
                 $result = $query->result();
@@ -96,10 +99,10 @@ class Cf_user_model extends Model {
 	}
 
         /**
-	 * get user user status relation
-	 * @param <INT> $user id of first user
-	 * @param <INT> $anotherUser id of another user
-	 * @return <BOOL> true if is related
+	 * get user status relation with other user
+	 * @param <INT> $user id of authenticated user
+	 * @param <INT> $anotherUser id of partner user
+	 * @return <INT> 0:if request on wait,1:if req is accept,2:if req is rejected
 	 */
 	function get_relation_status($user, $anotherUser)
         {
@@ -115,7 +118,35 @@ class Cf_user_model extends Model {
             $result = $this->db->query($sql);
             $result = $result->result_array();
 
+            $statusHolder = '';
+
             if(count($result) > 0)
-                return $result->status;
+                foreach ($result as $res)
+                {
+                    switch ($res['status'])
+                    {
+                        case 0:
+                                if($res['inviter'] == $user && $statusHolder != 'related')
+                                    $statusHolder = 'waiting';
+                                elseif($statusHolder != 'related')
+                                    $statusHolder = 'waitForMe';
+                        break;
+                        case 1:
+                            $statusHolder = 'related';
+                        break;
+                        case 2:
+                            if($statusHolder != 'related')
+                            {
+                                if($res['inviter'] == $user)
+                                    $statusHolder = 'reject';
+                                elseif($res['guest'] == $user && $statusHolder != 'waiting' && $statusHolder != 'reject')
+                                    $statusHolder = 'request';
+                            }
+                        break;
+                    }
+                }
+                if($statusHolder == '')
+                    $statusHolder = 'request';
+            return $statusHolder;
         }
 }

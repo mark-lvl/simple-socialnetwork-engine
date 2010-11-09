@@ -506,7 +506,7 @@ textarea.large
     background: #EEEEEE;
     width: 200px;
     float: right;
-    border: 1px dotted gray;
+    border: 1px dashed #BAD7D4;
     height: 100px;
 }
 
@@ -515,6 +515,17 @@ textarea.large
     background: #EEEEEE;
     width: 200px;
     float: left;
-    border: 1px dotted gray;
+    border: 1px dashed #BAD7D4;
     height: 100px;
+}
+
+.social_action
+{
+    background: #EEEEEE;
+    width: 200px;
+    float: left;
+    border: 1px dashed #BAD7D4;
+    height: 100px;
+    clear: left;
+    margin-top: 10px;
 }

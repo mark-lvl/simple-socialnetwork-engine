@@ -8,7 +8,9 @@
         </div>
     </div>
     <div class="user_friends">
-        <?php foreach($friends AS $f): ?>
+        <?php 
+              if($friends)
+              foreach($friends AS $f): ?>
             <?= anchor('core/profile/view/'.base64_encode($f->id), $f->first_name." ".$f->last_name) ?><br/>
         <?php endforeach; ?>
     </div>
