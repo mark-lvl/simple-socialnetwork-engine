@@ -10,4 +10,7 @@ $lang['label_passconf'] = "رمز عبور مجدد";
 $lang['label_submit'] = "ارسال";
 $lang['label_name'] = "نام";
 $lang['label_register_date'] = "تاریخ ثبت نام";
+
+
+$lang['label_city'] = "شهر";
 ?>

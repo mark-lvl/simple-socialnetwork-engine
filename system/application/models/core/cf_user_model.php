@@ -3,20 +3,26 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Cf_user_model extends Model {
 
+        
+
 	/**
 	 * Constructor - Initializes and references CI
 	 */
 	function Cf_user_model() {
 		parent::Model();
+
+                
 	}
 	
 	/**
 	 * create user from registeration or ...
 	 * @param <ARRAY> $params user details
 	 * @param <STRING> table name for user transaction
+	 * @param <STRING> table name for extra user information
+	 * @param <ARRAY> extra field for user information
 	 * @return <BOOL> success/failed process
 	 */
-	function create_user($params,$tableName)
+	function create_user($params, $tableName, $extraTable, $extraFields)
         {
 
             $data = array(
@@ -24,12 +30,30 @@ class Cf_user_model extends Model {
                           'last_name' => $params['last_name'] ,
                           'email' => $params['email'] ,
                           'password' => $params['password'] ,
-                          'sex' => $params['gender'] ,
                           'registration_ip' => $_SERVER['REMOTE_ADDR'] ,
                           'registration_date' => date('Y-m-d H:i:s')
                          );
+
             if($this->db->insert($tableName, $data))
-                return $this->db->insert_id();
+                $ext_data['user_id'] = $this->db->insert_id();
+
+            if(!empty ($extraTable))
+            {
+                if(is_array($extraFields))
+                {
+                    foreach ($extraFields as $field)
+                        if($field['in_registration'])
+                            $ext_data[$field['field_name']] = $params[$field['field_alter_name']];
+
+                    if($this->db->insert($extraTable, $ext_data))
+                        return TRUE;
+                    else
+                        return FALSE;
+                }
+
+            }
+            if(isset ($ext_data['user_id']))
+                return TRUE;
             else
                 return FALSE;
 	}

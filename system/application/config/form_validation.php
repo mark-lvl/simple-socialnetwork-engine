@@ -12,11 +12,6 @@ $config = array(
                                             'rules' => 'trim|required|min_length[2]'
                                          ),
                                     array(
-                                            'field' => 'gender',
-                                            'label' => 'lang:label_gender',
-                                            'rules' => 'required'
-                                         ),
-                                    array(
                                             'field' => 'email',
                                             'label' => 'lang:label_email',
                                             'rules' => 'trim|required|valid_email'

@@ -33,7 +33,12 @@ class Base_Controller extends Controller {
 
     protected function render($template='main') {
         $view_path = $this->controller_name . '/' . $this->action_name . '.tpl.php';
-        if (file_exists(APPPATH . 'views/controllers_body' . $view_path)) {
+
+        //if the request page from core files
+        if(!strstr($view_path, 'core'))
+                $view_path = 'controllers_body' . $view_path;
+
+        if (file_exists(APPPATH  . 'views/' . $view_path)) {
             $this->data['content'] .= $this->load->view($view_path, $this->data, true);
         }
 

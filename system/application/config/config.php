@@ -334,7 +334,7 @@ $config['proxy_ips'] = '';
 | config the PARSPAKE core values for used this framework
 |
 */
-$config['_core_user_table_name'] = "users";
+$config['_core_user_table_name'] = 'users';
 
 //number of user that show in the profile page
 $config['_core_profile_number_freinds'] = 4;
@@ -342,6 +342,31 @@ $config['_core_profile_number_freinds'] = 4;
 $config['_core_auth_identify_field'] = "username";
 $config['_core_auth_password_field'] = "password";
 
+
+$config['_core_user_profile_table_name'] = 'profiles';
+$config['_core_user_extra_field'] = array(
+                                         array('field_name' => 'photo',
+                                               'field_alter_name' => 'photo',
+                                               'field_label' => 'photo',
+                                               'rules' => array(),
+                                               'in_registration' => FALSE),
+                                         array('field_name' => 'sex',
+                                               'field_alter_name' => 'gender',
+                                               'field_label' => 'gender',
+                                               'rules' => array(),
+                                               'in_registration' => TRUE),
+                                         array('field_name' => 'birth_date',
+                                               'field_label' => 'birth',
+                                               'field_alter_name' => 'birthdate',
+                                               'rules' => array(),
+                                               'in_registration' => FALSE),
+                                         array('field_name' => 'city',
+                                               'field_alter_name' => 'city',
+                                               'field_label' => 'city',
+                                               'rules' => array('required'),
+                                               'in_registration' => TRUE)
+
+);
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

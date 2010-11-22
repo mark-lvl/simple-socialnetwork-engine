@@ -4,12 +4,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Cf_user {
 	private $ci;
         private $_userTable;
+        private $extraTableName;
+        private $extraFields;
 	/**
 	 * Constructor - Initializes and references CI
 	 */
 	function Cf_user() {
 		$this->ci = & get_instance();
                 $this->_userTable =  $this->ci->config->item('_core_user_table_name');
+                $this->extraTableName = $this->ci->config->item('_core_user_profile_table_name');
+                $this->extraFields = $this->ci->config->item('_core_user_extra_field');
 	}
 
         /**
@@ -22,9 +26,12 @@ class Cf_user {
             $this->ci->load->library("cf_security");
             $this->ci->load->model('core/cf_user_model');
             if($this->unique_email($params['email']))
-            {
+            {//var_dump($this->extraFields);exit;
                 $params['password'] = $this->ci->cf_security->generate_hash($params['password']);
-                if($this->ci->cf_user_model->create_user($params,$this->_userTable))
+                if($this->ci->cf_user_model->create_user($params, 
+                                                         $this->_userTable,
+                                                         $this->extraTableName,
+                                                         $this->extraFields))
                     return 'success';
                 else
                     return 'faild';
