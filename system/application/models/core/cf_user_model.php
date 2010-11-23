@@ -111,11 +111,18 @@ class Cf_user_model extends Model {
 	 * @param <STRING> $tableName the name of user's table
 	 * @return <BOOL> user object/FALSE
 	 */
-	function get_user_by_id($id, $tableName)
+	function get_user_by_id($id, $tableName, $extraTable)
         {
-            $query = $this->db->get_where($tableName, array('id' => $id));
+            $this->db->select('*');
+            $this->db->from($tableName);
 
-            $user = $query->row();
+            if(!empty ($extraTable))
+                $this->db->join($extraTable, $extraTable . '.id = ' . $tableName . '.id');
+
+            $user = $this->db->where(array('id' => $id))
+                             ->get()
+                             ->row();
+
             if($user)
                 return $user;
             else

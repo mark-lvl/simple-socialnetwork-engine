@@ -67,4 +67,25 @@ class Profile extends Base_Controller {
         $this->render();
     }
 
+    function edit()
+    {
+        $this->load->helper(array('form'));
+        $this->load->library('cf_authentication');
+        $this->load->library('cf_user');
+        
+        $this->data['user'] = $this->cf_authentication->is_user();
+
+        if($this->input->post('submit'))
+            var_dump($this->input->post('submit'));exit;
+            //$this->data['friends'] = $this->cf_user->get_user_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));
+
+
+        if(!$this->data['user'])
+            redirect('core/registration/login');
+
+        $this->data['title'] = $this->data['lang']['title_profile_edit'];
+
+        $this->render();
+    }
+
 }

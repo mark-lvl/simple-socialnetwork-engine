@@ -6,6 +6,9 @@
         <div class="user_item">
             <?= $lang['label_register_date']." : ".convert_number(fa_strftime("%d %B %Y", $user->registration_date . "")) ?>
         </div>
+        <div class="user_item">
+            <?= anchor('core/profile/edit', $lang['core_profile_edit']) ?>
+        </div>
     </div>
     <div class="user_friends">
         <?php 

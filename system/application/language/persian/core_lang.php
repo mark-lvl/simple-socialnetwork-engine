@@ -6,4 +6,6 @@ $lang['core_social_related'] = "شما در حال حاضر دوست هستید"
 $lang['core_social_rejected_request'] = "درخواست دوستی شما رد شده است";
 $lang['core_social_request_friend'] = "درخواست دوستی";
 
+$lang['core_profile_edit'] = "تنظیم پروفایل";
+
 ?>

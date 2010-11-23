@@ -51,7 +51,7 @@ $autoload['libraries'] = array('database','session','cf_cache');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'fa_number', 'fa_date');
+$autoload['helper'] = array('url', 'fa_number', 'fa_date','encryption');
 
 
 /*

@@ -16,11 +16,17 @@ class Cf_authentication_model extends Model {
 		parent::Model();
 	}
 	
-	function login($tableName, $email, $password) {
+	function login($tableName, $extraTableName, $email, $password) {
 
-                $user = $this->db->get_where($tableName,
-                                             array('email'=> $email,
-                                                   'password'=>$password))
+                $this->db->select('*');
+                $this->db->from($tableName);
+
+                if(!empty ($extraTableName))
+                    $this->db->join($extraTableName, $extraTableName . '.user_id = ' . $tableName . '.id');
+
+                $user = $this->db->where(array('email'=> $email,
+                                               'password'=>$password))
+                                 ->get()
                                  ->row();
                 
                 if(count($user) > 0)

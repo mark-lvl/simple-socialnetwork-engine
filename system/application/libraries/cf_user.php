@@ -4,16 +4,16 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Cf_user {
 	private $ci;
         private $_userTable;
-        private $extraTableName;
-        private $extraFields;
+        private $_extraTableName;
+        private $_extraFields;
 	/**
 	 * Constructor - Initializes and references CI
 	 */
 	function Cf_user() {
 		$this->ci = & get_instance();
                 $this->_userTable =  $this->ci->config->item('_core_user_table_name');
-                $this->extraTableName = $this->ci->config->item('_core_user_profile_table_name');
-                $this->extraFields = $this->ci->config->item('_core_user_extra_field');
+                $this->_extraTableName = $this->ci->config->item('_core_user_profile_table_name');
+                $this->_extraFields = $this->ci->config->item('_core_user_extra_field');
 	}
 
         /**
@@ -21,23 +21,61 @@ class Cf_user {
 	 * @param <ARRAY> $params user details
 	 * @return <BOOL> success/failed process
 	 */
-        function create_user($params)
+        function manage_user($params)
         {
             $this->ci->load->library("cf_security");
             $this->ci->load->model('core/cf_user_model');
-            if($this->unique_email($params['email']))
-            {//var_dump($this->extraFields);exit;
-                $params['password'] = $this->ci->cf_security->generate_hash($params['password']);
-                if($this->ci->cf_user_model->create_user($params, 
-                                                         $this->_userTable,
-                                                         $this->extraTableName,
-                                                         $this->extraFields))
-                    return 'success';
-                else
-                    return 'faild';
+
+            //include the form validation language
+            $this->ci->lang->load('form_validation','persian');
+            $lang = $this->ci->lang->language;
+        
+            //set custom message for form validation errors
+            $this->ci->form_validation->set_message('required', $lang['form_validation_required']);
+            $this->ci->form_validation->set_message('min_length', $lang['form_validation_min_length']);
+            $this->ci->form_validation->set_message('max_length', $lang['form_validation_max_length']);
+            $this->ci->form_validation->set_message('valid_email', $lang['form_validation_valid_email']);
+            $this->ci->form_validation->set_message('matches', $lang['form_validation_matches']);
+
+            //append the extra field's rules to the form validation rules that used in signup condition
+            if(!empty ($this->_extraTableName))
+            {
+                if(is_array($this->_extraFields))
+                {
+                    foreach ($this->_extraFields as $field)
+                    {
+                            if(isset($field['rules']) && $field['rules'] != "")
+                                array_push($this->ci->form_validation->_config_rules['user_info'], array(
+                                            'field' => $field['field_alter_name'],
+                                            'label' => 'lang:label_'.$field['field_label'],
+                                            'rules' => implode("|", $field['rules'])
+                                         ));
+                    }
+                }
             }
-            else
-                return 'notUnique';
+            //check the form validation status
+            if ($this->ci->form_validation->run('user_info') != FALSE)
+            {
+                //check for new user or udpate a exist user
+                if(!isset($params['user_id']))
+                {
+                    if($this->unique_email($params['email']))
+                    {
+                        $params['password'] = $this->ci->cf_security->generate_hash($params['password']);
+                        if($this->ci->cf_user_model->create_user($params,
+                                                                 $this->_userTable,
+                                                                 $this->_extraTableName,
+                                                                 $this->_extraFields))
+                            return 'success';
+                        else
+                            return 'faild';
+                    }
+                    else
+                        return 'notUnique';
+                }
+
+
+            }
         }
 
         /**
@@ -76,11 +114,11 @@ class Cf_user {
 	 * @param <STRING> $tableName the name of user's table
 	 * @return <ARRAY> the user object
 	 */
-        function get_user_by_id($id, $tableName)
+        function get_user_by_id($id)
         {
             $this->ci->load->model('core/cf_user_model');
 
-            return $this->ci->cf_user_model->get_user_by_id($id, $tableName);
+            return $this->ci->cf_user_model->get_user_by_id($id, $this->_userTable, $this->_extraTableName);
         }
 
         /**

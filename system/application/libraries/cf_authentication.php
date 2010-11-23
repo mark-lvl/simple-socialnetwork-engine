@@ -11,6 +11,7 @@ if (!defined('BASEPATH'))
 class Cf_authentication {
 	private $ci;
         private $_userTable;
+        private $_extraTableName;
 	/**
 	 * Constructor - Initializes and references CI
 	 */
@@ -18,6 +19,7 @@ class Cf_authentication {
         {
 		$this->ci = & get_instance();
                 $this->_userTable =  $this->ci->config->item('_core_user_table_name');
+                $this->_extraTableName = $this->ci->config->item('_core_user_profile_table_name');
 	}
 	/**
 	 * Make a user logged in with the given email, password
@@ -36,7 +38,8 @@ class Cf_authentication {
                 $this->ci->load->model("core/cf_authentication_model");
                 $this->ci->load->library("cf_security");
 
-                $user = $this->ci->cf_authentication_model->login($this->_userTable, 
+                $user = $this->ci->cf_authentication_model->login($this->_userTable,
+                                                                  $this->_extraTableName,
                                                                   $username,
                                                                   $this->ci->cf_security->generate_hash($password));
 

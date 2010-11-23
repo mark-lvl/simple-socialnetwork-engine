@@ -15,6 +15,9 @@ class Base_Controller extends Controller {
         $this->lang->load('errors','persian');
         $this->data['lang'] = $this->lang->language;
 
+        //create a object from core encryption class
+        $this->encryption = new encryption();
+
         $this->load_defaults();
         }
 
