@@ -36,10 +36,11 @@ class Profile extends Base_Controller {
 
     function view($hashedId)
     {
+        
         $this->load->library('cf_authentication');
         $this->load->library('cf_user');
         $this->data['user'] = $this->cf_authentication->is_user();
-        
+ 
         //if user_id to view is equal with logged user_id
         if(base64_encode($this->data['user']->id) == $hashedId)
             redirect('core/profile');
@@ -68,15 +69,36 @@ class Profile extends Base_Controller {
     }
 
     function edit()
-    {
+   {
+        $this->lang->load('labels','persian');
+        $this->lang->load('content','persian');
+        $this->data['lang'] = $this->lang->language;
+
         $this->load->helper(array('form'));
+        $this->load->library('form_validation');
         $this->load->library('cf_authentication');
         $this->load->library('cf_user');
         
         $this->data['user'] = $this->cf_authentication->is_user();
+//var_dump($this->data['user']);exit;
+        //encrypt the user id for show in frontend
+        $this->data['user']->id = $this->encryption->encrypt($this->data['user']->id);
 
         if($this->input->post('submit'))
-            var_dump($this->input->post('submit'));exit;
+        {
+            $_POST['user_id'] = $this->encryption->decrypt($_POST['user_id']);
+
+            $this->load->library('cf_user');
+            $fb = $this->cf_user->manage_user($this->input->xss_clean($_POST), $this->data['user']);
+
+            if($fb == 'success')
+                $this->action_name = "success";
+            elseif($fb == 'faild')
+                $this->data['message'] = $this->data['lang']['error_database_insert_faild'];
+            elseif($fb == 'notUnique')
+                $this->data['message'] = $this->data['lang']['error_user_email_not_unique'];
+        }
+
             //$this->data['friends'] = $this->cf_user->get_user_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));
 
 

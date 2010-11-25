@@ -44,7 +44,7 @@
                 </div>
             </li>
             <!-- load the template of extra field in registration -->
-            <?php $this->load->view("partials/registerExtraField.tpl.php"); ?>
+            <?php $this->load->view("core/registration/registerExtraField.tpl.php"); ?>
             <li class="buttons">
                 <input id="saveForm" class="button_text" type="submit" name="submit" value="<?= $lang['label_submit'] ?>" />
             </li>

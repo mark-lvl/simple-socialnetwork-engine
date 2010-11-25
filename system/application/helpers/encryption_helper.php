@@ -18,11 +18,12 @@ class encryption{
     var $errors;        // array of error messages
     var $adj;           // 1st adjustment value (optional)
     var $mod;           // 2nd adjustment value (optional)
+    var $key;
 
     // ****************************************************************************
     // class constructor
     // ****************************************************************************
-    function encryption ()
+    function encryption ($key)
     {
         $this->errors = array();
 
@@ -40,12 +41,17 @@ class encryption{
         $this->adj = 1.75;  // this value is added to the rolling fudgefactors
         $this->mod = 3;     // if divisible by this the adjustment is made negative
 
+        //init the key for encryption form config file
+        $this->key =  $key;
+
     } // constructor
 
     // ****************************************************************************
-    function decrypt ($key, $source)
+    function decrypt ($source, $key = "")
     // decrypt string into its original form
     {
+        if(empty ($key))
+            $key = $this->key;
         $this->errors = array();
 
         // convert $key into a sequence of numbers
@@ -102,10 +108,13 @@ class encryption{
     } // decrypt
 
     // ****************************************************************************
-    function encrypt ($key, $source, $sourcelen = 0)
+    function encrypt ($source, $key = "", $sourcelen = 0)
     // encrypt string into a garbled form
     {
+
         $this->errors = array();
+        if(empty ($key))
+            $key = $this->key;
 
         // convert $key into a sequence of numbers
         $fudgefactor = $this->_convertKey($key);

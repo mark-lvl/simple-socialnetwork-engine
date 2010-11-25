@@ -21,7 +21,7 @@ class Cf_user {
 	 * @param <ARRAY> $params user details
 	 * @return <BOOL> success/failed process
 	 */
-        function manage_user($params)
+        function manage_user($params, $user = "")
         {
             $this->ci->load->library("cf_security");
             $this->ci->load->model('core/cf_user_model');
@@ -73,8 +73,35 @@ class Cf_user {
                     else
                         return 'notUnique';
                 }
+                //update the user
+                else
+                {
+                    //create extrafields array of name and altername of fields
+                    foreach ($this->_extraFields as $value)
+                        $extraFields[$value['field_name']] = $value['field_alter_name'];
 
-
+                    //remove user_id field for change user record
+                    $user_id = $params['user_id'];
+                    unset($params['user_id']);
+                    
+                    foreach($params AS $alterFieldName => $value)
+                    {
+                        
+                        $realFieldName = array_keys($extraFields, $alterFieldName);
+                        if(!empty($realFieldName[0]))
+                        {
+                            if(isset($user->$realFieldName[0]))
+                            if($user->$realFieldName[0] != $value)
+                                $extraChanged[$realFieldName[0]] = $value;
+                        }
+                        else
+                        {
+                            if(isset($user->$alterFieldName))
+                            if($user->$alterFieldName != $value)
+                                    $fieldChanged[$alterFieldName] = $value;
+                        }
+                    }
+                }
             }
         }
 

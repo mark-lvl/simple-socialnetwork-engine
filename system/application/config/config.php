@@ -218,7 +218,7 @@ $config['cache_default_expires'] = 0;
 | enabled you MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = "";
+$config['encryption_key'] = "mySalt";
 
 /*
 |--------------------------------------------------------------------------

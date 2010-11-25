@@ -795,6 +795,7 @@ if ( ! function_exists('set_radio'))
 {
 	function set_radio($field = '', $value = '', $default = FALSE)
 	{
+
 		$OBJ =& _get_validation_object();
 
 		if ($OBJ === FALSE)
