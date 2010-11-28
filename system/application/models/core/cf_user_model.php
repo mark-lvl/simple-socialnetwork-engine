@@ -60,71 +60,29 @@ class Cf_user_model extends Model {
 
 	/**
 	 * update user for change setting
-	 * @param <ARRAY> $params user details
+	 * @param <OBJECT> $user user object
 	 * @param <STRING> table name for user transaction
 	 * @param <STRING> table name for extra user information
-	 * @param <ARRAY> extra field for user information
+	 * @param <ARRAY> user field that cheanged
+	 * @param <ARRAY> user extra field that cheanged
 	 * @return <BOOL> success/failed process
 	 */
-	function update_user($params, $tableName, $extraTable, $extraFields)
+	function update_user($user_id, $tableName, $extraTable, $fields = "", $extraFields = "")
         {
-            if((!isset($params['user_id'])) || ($params['user_id'] < 0))
-                return FALSE;
-            
-            $cols = "";
-            foreach($fields as $x => $k) {
-                if(is_array($exp) && array_search($k, $exp) !== FALSE) {
-                        $cols .= $k . " = " . $user->$k . ",";
-                }
-                else {
-                        $cols .= $k . " = " . $this->db->escape($user->$k) . ",";
-                        }
-            }
-            $cols = rtrim($cols, ",");
-            $sql = "UPDATE `users` SET " . $cols . " WHERE id = '" . $user->id . "'";
-                if($this->db->query($sql)) {
-                    return TRUE;
-                }
-                return FALSE;
+            $this->db->trans_start();
 
-
-
-
-
-
-
-
-
-
-            
-            
-            $data = array(
-                          'first_name' => $params['first_name'] ,
-                          'last_name' => $params['last_name'] ,
-                          'password' => $params['password'] ,
-                          'registration_ip' => $_SERVER['REMOTE_ADDR'] ,
-                          'registration_date' => date('Y-m-d H:i:s')
-                         );
-
-            if($this->db->insert($tableName, $data))
-                $ext_data['user_id'] = $this->db->insert_id();
-
-            if(!empty ($extraTable))
+            if($fields)
             {
-                if(is_array($extraFields))
-                {
-                    foreach ($extraFields as $field)
-                        if($field['in_registration'])
-                            $ext_data[$field['field_name']] = $params[$field['field_alter_name']];
-
-                    if($this->db->insert($extraTable, $ext_data))
-                        return TRUE;
-                    else
-                        return FALSE;
-                }
-
+                $this->db->where('id', $user_id);
+                $this->db->update($tableName, $fields);
             }
-            if(isset ($ext_data['user_id']))
+
+            if($extraFields)
+            {
+                $this->db->where('user_id', $user_id);
+                $this->db->update($extraTable, $extraFields);
+            }
+            if($this->db->trans_complete())
                 return TRUE;
             else
                 return FALSE;
@@ -189,9 +147,9 @@ class Cf_user_model extends Model {
             $this->db->from($tableName);
 
             if(!empty ($extraTable))
-                $this->db->join($extraTable, $extraTable . '.id = ' . $tableName . '.id');
+                $this->db->join($extraTable, $extraTable . '.user_id = ' . $tableName . '.id');
 
-            $user = $this->db->where(array('id' => $id))
+            $user = $this->db->where(array($tableName.'.id' => $id))
                              ->get()
                              ->row();
 

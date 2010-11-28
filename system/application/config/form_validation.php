@@ -1,6 +1,6 @@
 <?php
 $config = array(
-               'user_info' => array(
+                  'signup' => array(
                                     array(
                                             'field' => 'first_name',
                                             'label' => 'lang:label_first_name',
@@ -20,6 +20,18 @@ $config = array(
                                             'field' => 'password',
                                             'label' => 'lang:label_password',
                                             'rules' => 'trim|required|min_length[6]|max_length[12]|matches[repassword]'
+                                         )
+                                    ),
+                  'user_edit' => array(
+                                    array(
+                                            'field' => 'first_name',
+                                            'label' => 'lang:label_first_name',
+                                            'rules' => 'trim|required|min_length[2]'
+                                         ),
+                                    array(
+                                            'field' => 'last_name',
+                                            'label' => 'lang:label_last_name',
+                                            'rules' => 'trim|required|min_length[2]'
                                          )
                                     ),
                   'login' => array(

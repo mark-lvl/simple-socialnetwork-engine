@@ -80,7 +80,10 @@ class Profile extends Base_Controller {
         $this->load->library('cf_user');
         
         $this->data['user'] = $this->cf_authentication->is_user();
-//var_dump($this->data['user']);exit;
+
+        if(!$this->data['user'])
+            redirect('core/registration/login');
+
         //encrypt the user id for show in frontend
         $this->data['user']->id = $this->encryption->encrypt($this->data['user']->id);
 
@@ -89,14 +92,9 @@ class Profile extends Base_Controller {
             $_POST['user_id'] = $this->encryption->decrypt($_POST['user_id']);
 
             $this->load->library('cf_user');
-            $fb = $this->cf_user->manage_user($this->input->xss_clean($_POST), $this->data['user']);
+            $fb = $this->cf_user->update_user($this->input->xss_clean($_POST), $this->data['user']);
 
-            if($fb == 'success')
-                $this->action_name = "success";
-            elseif($fb == 'faild')
-                $this->data['message'] = $this->data['lang']['error_database_insert_faild'];
-            elseif($fb == 'notUnique')
-                $this->data['message'] = $this->data['lang']['error_user_email_not_unique'];
+            redirect('core/profile');
         }
 
             //$this->data['friends'] = $this->cf_user->get_user_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));

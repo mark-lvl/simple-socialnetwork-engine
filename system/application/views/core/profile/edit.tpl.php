@@ -26,26 +26,6 @@
                 </div>
                 <?php echo form_error('last_name', '<div class="error">', '</div>'); ?>
             </li>
-            <li>
-                <label class="description"><?= $lang['label_email'] ?></label>
-                <div>
-                    <input name="email" class="element text medium" type="text" maxlength="255" value="<?php echo set_value('email',$user->email); ?>"/>
-                </div>
-                <?php echo form_error('email', '<div class="error">', '</div>'); ?>
-            </li>
-            <li>
-                <label class="description"><?= $lang['label_password'] ?></label>
-                <div>
-                    <input name="password" class="element text medium" type="password" maxlength="255" value="<?php echo set_value('password'); ?>"/>
-                </div>
-                <?php echo form_error('password', '<div class="error">', '</div>'); ?>
-            </li>
-            <li>
-                <label class="description"><?= $lang['label_passconf'] ?></label>
-                <div>
-                    <input name="repassword" class="element text medium" type="password" maxlength="255" value="<?php echo set_value('repassword'); ?>"/>
-                </div>
-            </li>
             <!-- load the template of extra field in registration -->
             <?php $this->load->view("core/profile/profileExtraField.tpl.php"); ?>
             <li class="buttons">
