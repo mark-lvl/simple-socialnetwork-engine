@@ -1,3 +1,16 @@
+<script>
+function addToFriendConfirm()
+{
+    Boxy.confirm('MARK', addToFriend,{title:'TITLE'});
+}
+function addToFriend()
+{
+    var params = {};
+    params['id'] = id;
+    ajax_request('#ajaxHolder','<?= base_url() ?>profile/addToFriend',params);
+}
+</script>
+
 <div class="profile_container">
     <div class="profile_user_box">
         <div class="user_item">
@@ -11,7 +24,7 @@
         <?php
         if(is_array($friends))
         foreach($friends AS $f): ?>
-            <?= anchor('core/profile/view/'.base64_encode($f->id), $f->first_name." ".$f->last_name) ?><br/>
+            <?= anchor('core/profile/view/'.$encryption->encrypt($f->id), $f->first_name." ".$f->last_name) ?><br/>
         <?php endforeach; ?>
     </div>
     <div class="social_action">
@@ -24,7 +37,10 @@
         <?php elseif($relation_status == 'reject'): ?>
             <?= $lang['core_social_rejected_request'] ?>
         <?php elseif($relation_status == 'request'): ?>
-            <?= $lang['core_social_request_friend'] ?>
+            <?= anchor('',
+                $lang['core_social_request_friend'],
+                array('onclick'=>"addToFriendConfirm();return false;"));
+            ?>
         <?php endif; ?>
     </div>
 </div>

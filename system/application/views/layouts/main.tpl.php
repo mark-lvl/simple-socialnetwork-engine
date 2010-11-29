@@ -5,6 +5,7 @@
 <title><?php echo $title; ?></title>
 
 <?php echo $css; ?>
+<?php echo $js; ?>
 
 
 </head>

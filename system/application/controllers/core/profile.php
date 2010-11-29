@@ -14,6 +14,13 @@ class Profile extends Base_Controller {
         $this->lang->load('content','persian');
         $this->lang->load('labels','persian');
         $this->lang->load('core','persian');
+
+        //append css to layout
+        $this->add_css('boxy');
+
+        //append js to layout
+        $this->add_js('jquery');
+        $this->add_js('jquery.boxy');
     }
 
     function index()
@@ -42,11 +49,11 @@ class Profile extends Base_Controller {
         $this->data['user'] = $this->cf_authentication->is_user();
  
         //if user_id to view is equal with logged user_id
-        if(base64_encode($this->data['user']->id) == $hashedId)
+        if($this->data['user']->id == $this->encryption->decrypt($hashedId))
             redirect('core/profile');
 
         //the partner user profile details
-        $this->data['partner'] = $this->cf_user->get_user_by_id(base64_decode($hashedId),
+        $this->data['partner'] = $this->cf_user->get_user_by_id($this->encryption->decrypt($hashedId),
                                                                 $this->_userTable);
 
         $this->data['friends'] = $this->cf_user->get_user_friends($this->data['partner'],
@@ -54,7 +61,7 @@ class Profile extends Base_Controller {
 
         //status between the logged_user and partner
         $this->data['relation_status'] = $this->cf_user->get_relation_status($this->data['user']->id,
-                                                                             base64_decode($hashedId));
+                                                                             $this->encryption->decrypt($hashedId));
 
         if(!$this->data['user'])
             redirect('core/registration/login');

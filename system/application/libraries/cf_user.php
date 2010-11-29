@@ -59,7 +59,7 @@ class Cf_user {
                 }
             }
             //check the form validation status
-            if ($this->ci->form_validation->run('user_info') != FALSE)
+            if ($this->ci->form_validation->run('signup') != FALSE)
             {
                 if($this->unique_email($params['email']))
                 {

@@ -14,7 +14,7 @@
         <?php 
               if($friends)
               foreach($friends AS $f): ?>
-            <?= anchor('core/profile/view/'.base64_encode($f->id), $f->first_name." ".$f->last_name) ?><br/>
+            <?= anchor('core/profile/view/'.$encryption->encrypt($f->id), $f->first_name." ".$f->last_name) ?><br/>
         <?php endforeach; ?>
     </div>
 </div>

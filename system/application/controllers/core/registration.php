@@ -29,7 +29,7 @@ class Registration extends Base_Controller {
         if($this->input->post('submit'))
         {
             $this->load->library('cf_user');
-            $fb = $this->cf_user->manage_user($this->input->xss_clean($_POST));
+            $fb = $this->cf_user->create_user($this->input->xss_clean($_POST));
 
             if($fb == 'success')
                 $this->action_name = "success";

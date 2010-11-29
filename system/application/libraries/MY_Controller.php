@@ -18,6 +18,7 @@ class Base_Controller extends Controller {
 
         //create a object from core encryption class
         $this->encryption = new encryption($this->config->item('encryption_key'));
+        $this->data['encryption'] = $this->encryption;
 
         $this->load_defaults();
         }
@@ -26,6 +27,7 @@ class Base_Controller extends Controller {
         $this->data['heading'] = '';
         $this->data['content'] = '';
         $this->data['css'] = '';
+        $this->data['js'] = '';
         $this->data['title'] = 'Page Title';
 
         $this->add_css('main');
@@ -51,6 +53,10 @@ class Base_Controller extends Controller {
 
     protected function add_css($filename) {
         $this->data['css'] .= $this->load->view("partials/css.tpl.php", array('filename' => $filename), true);
+    }
+
+    protected function add_js($filename) {
+        $this->data['js'] .= $this->load->view("partials/js.tpl.php", array('filename' => $filename), true);
     }
 
 }
