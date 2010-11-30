@@ -372,5 +372,7 @@ $config['_core_user_extra_field'] = array(
 
 );
 
+$config['_friend_request_limitation'] = 500;
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
