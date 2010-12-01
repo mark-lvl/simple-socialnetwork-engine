@@ -207,7 +207,7 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 |
 */
 $config['cache_dir'] = '/var/www/codeigniter/system/cache';
-$config['cache_default_expires'] = 0;
+$config['cache_default_expires'] = 3600;
 
 /*
 |--------------------------------------------------------------------------

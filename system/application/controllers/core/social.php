@@ -18,6 +18,8 @@ class Social extends Base_Controller {
 
     function add_friend($id = "")
     {
+        $this->load->library('cf_authentication');
+        
         $this->data['user'] = $this->cf_authentication->is_user();
 
         if(!$this->data['user'])
@@ -31,8 +33,12 @@ class Social extends Base_Controller {
         
         if($this->cf_social->set_user_relation($this->data['user'], $id))
         {
-            //az inja bebado baiad dorost konam
-            Social_model::send_message($ob->id, $id, str_replace("XXX", $ob->name, $this->lang->language['add_request']), str_replace("XXX", $ob->id, $this->lang->language['add_requestbody']),FALSE);
+            $this->cf_social->send_message( $this->data['user']->id,
+                                            $id,
+                                            $this->data['lang']['content_request_friend_mess_title'],
+                                            $this->data['lang']['content_request_friend_mess_body'],
+                                            1,
+                                            FALSE);
             redirect('message/success/101');
         }
         else

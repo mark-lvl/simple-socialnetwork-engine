@@ -37,6 +37,8 @@ class Cf_cache
 
 		$this->path = $this->ci->config->item('cache_dir');
 		$this->default_expires = $this->ci->config->item('cache_default_expires');
+
+                
 		if ( ! is_dir($this->path))
 		{
 			show_error("Cache Path not found: $this->path");
@@ -261,6 +263,7 @@ class Cf_cache
 	 */
 	function write($contents = NULL, $filename = NULL, $expires = NULL, $dependencies = array())
 	{
+
 		// Check if cache was passed with the function or uses this object
 		if ($contents !== NULL)
 		{

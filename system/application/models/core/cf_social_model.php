@@ -13,21 +13,17 @@ class Cf_social_model extends Model {
 	}
 	
 	/**
-	 * create user from registeration or ...
-	 * @param <OBJECT> logged in user object
-	 * @return <BOOL> success/failed process
+	 * shows the number of request hatr send from logged user
+	 * @param <OBJECT> $user logged in user object
+	 * @return <INT> the request number
 	 */
 	function get_user_request_limitation($user)
         {
             $sqlCounter = "SELECT count(id) AS counter FROM `relations` WHERE `inviter` = ".$user->id.";";
             $resultCounter = $this->db->query($sqlCounter);
             $counter = $resultCounter->row()->counter;
-            $this->cf_cache->write($counter, 'userFriendRequest_' . $user->id, 1800);
 
-            if($counter > self::FRIEND_REQUEST_LIMITAION)
-                    return FALSE;
-            else
-                    return TRUE;
+            return $counter;
         }
 
 	/**
@@ -55,5 +51,48 @@ class Cf_social_model extends Model {
                     return TRUE;
                 return FALSE;
             }
+        }
+
+        /**
+	 * send private message from one user to another
+	 * @param <INT> $from_id the message sender's id
+	 * @param <INT> $to_id the message recipient's id
+	 * @param <STRING> $title title of the private message
+	 * @param <STRING> $body main body of the private message
+	 * @param <INT> $type type and kind of pm
+	 * @param <BOOL> $secure for strip all html and php tags from message content
+	 * @param <STATUS> $status status of message is 0 for unread and 1 for read
+	 * @return <BOOL> success/failed process
+	 */
+	function send_message($from_id, $to_id, $title, $body, $type, $secure = TRUE, $status = 1)
+        {
+            if ($secure)
+                $sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status` , `type`)
+                        VALUES(" .  $this->db->escape($from_id) . ", " .
+                                    $this->db->escape($to_id) . ", '" .
+                                    date("Y-m-d H:i:s") . "', " .
+                                    $this->db->escape(strip_tags($body)) . ",'" .
+                                    $_SERVER['REMOTE_ADDR'] . "'," .
+                                    $this->db->escape($title) . "," .
+                                    (int)$status . "," .
+                                    $type .
+                        ")";
+            else
+                $sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status`, `type`)
+                        VALUES(" .  $this->db->escape($from_id) . ", " .
+                                    $this->db->escape($to_id) . ", '" .
+                                    date("Y-m-d H:i:s") . "', " .
+                                    $this->db->escape($body) . ",'" .
+                                    $_SERVER['REMOTE_ADDR'] . "'," .
+                                    $this->db->escape($title) . "," .
+                                    (int)$status . "," .
+                                    $type.
+                        ")";
+
+            
+            if ($this->db->query($sql)) 
+                return TRUE;
+            else
+                return FALSE;
         }
 }

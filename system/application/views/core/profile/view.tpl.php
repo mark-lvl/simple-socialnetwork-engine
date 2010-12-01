@@ -24,7 +24,7 @@
         <?php elseif($relation_status == 'reject'): ?>
             <?= $lang['core_social_rejected_request'] ?>
         <?php elseif($relation_status == 'request'): ?>
-            <?= anchor(,$lang['core_social_request_friend']); ?>
+            <?= anchor('core/social/add_friend',$lang['core_social_request_friend']); ?>
         <?php endif; ?>
     </div>
 </div>
