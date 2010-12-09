@@ -5,6 +5,7 @@ $lang['core_social_wait_for_accept_by_me'] = "منتظر تایید از طرف 
 $lang['core_social_related'] = "شما در حال حاضر دوست هستید";
 $lang['core_social_rejected_request'] = "درخواست دوستی شما رد شده است";
 $lang['core_social_request_friend'] = "درخواست دوستی";
+$lang['core_social_remove_friend'] = "حذف دوست";
 
 $lang['core_profile_edit'] = "تنظیم پروفایل";
 

@@ -158,22 +158,6 @@ class Cf_user {
         }
 
         /**
-	 * get user friends
-	 * @param <OBJECT> $user
-	 * @param <INT> $limit number of returned friends
-	 * @return <ARRAY> list of returned friends
-	 */
-        function get_user_friends($user, $limit = "", $offset = "")
-        {
-            if(!is_object($user))
-                return FALSE;
-
-            $this->ci->load->model('core/cf_user_model');
-
-            return $this->ci->cf_user_model->get_friends($user, $limit, $offset);
-        }
-
-        /**
 	 * get user by the user_id
 	 * @param <INT> $id
 	 * @param <STRING> $tableName the name of user's table

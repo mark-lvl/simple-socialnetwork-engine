@@ -59,5 +59,16 @@ class Base_Controller extends Controller {
         $this->data['js'] .= $this->load->view("partials/js.tpl.php", array('filename' => $filename), true);
     }
 
+    protected function userAcl()
+    {
+        $this->load->library('cf_authentication');
+        
+        $user = $this->cf_authentication->is_user();
+        if(!$user)
+            redirect('core/registration/login');
+        else
+            return $user;
+    }
+
 }
 ?>

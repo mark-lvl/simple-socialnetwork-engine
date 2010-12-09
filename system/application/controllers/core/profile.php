@@ -25,11 +25,11 @@ class Profile extends Base_Controller {
 
     function index()
     {
-        $this->load->library('cf_authentication');
         $this->load->library('cf_user');
-        $this->data['user'] = $this->cf_authentication->is_user();
+        $this->load->library('cf_social');
+        $this->data['user'] = $this->userAcl();
 
-        $this->data['friends'] = $this->cf_user->get_user_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));
+        $this->data['friends'] = $this->cf_social->get_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));
 
         if(!$this->data['user'])
             redirect('core/registration/login');
@@ -46,6 +46,7 @@ class Profile extends Base_Controller {
         
         $this->load->library('cf_authentication');
         $this->load->library('cf_user');
+        $this->load->library('cf_social');
         $this->data['user'] = $this->cf_authentication->is_user();
  
         //if user_id to view is equal with logged user_id
@@ -56,7 +57,7 @@ class Profile extends Base_Controller {
         $this->data['partner'] = $this->cf_user->get_user_by_id($this->encryption->decrypt($hashedId),
                                                                 $this->_userTable);
 
-        $this->data['friends'] = $this->cf_user->get_user_friends($this->data['partner'],
+        $this->data['friends'] = $this->cf_social->get_friends($this->data['partner'],
                                                                   $this->config->item('_core_profile_number_freinds'));
 
         //status between the logged_user and partner
@@ -103,8 +104,6 @@ class Profile extends Base_Controller {
 
             redirect('core/profile');
         }
-
-            //$this->data['friends'] = $this->cf_user->get_user_friends($this->data['user'], $this->config->item('_core_profile_number_freinds'));
 
 
         if(!$this->data['user'])

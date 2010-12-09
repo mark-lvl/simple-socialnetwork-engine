@@ -88,52 +88,6 @@ class Cf_user_model extends Model {
                 return FALSE;
 	}
 
-        /**
-	 *this function create a array of user friends list
-	 * @param <OBJECT> $user
-	 * @param <INT> $limit limitation of freinds return
-	 * @param <INT> $offset offset for sql select query
-	 * @return <ARRAY> user friends
-	 */
-        function get_friends($user, $limit = "", $offset = "")
-        {
-            if (is_object($user))
-                $user = $user->id;
-            else
-                return FALSE;
-
-            $result = $this->cf_cache->get('friends_' . $user);
-
-            if (!$result) {
-                if($limit)
-                    $limitString = " LIMIT ".$limit;
-                if($offset)
-                    $limitString .= " OFFSET ".$offset;
-
-                $sql = "SELECT A.id AS fake_id, B.* FROM `relations` A, `users` B
-                        WHERE A.`inviter` = " . $this->db->escape($user) . "
-                        AND B.id = A.`guest`
-                        AND A.`status` = 1
-                        UNION
-                        SELECT A.id AS fake_id, B.* FROM `relations` A, `users` B
-                        WHERE A.`guest` = " . $this->db->escape($user) . "
-                        AND B.id = A.`inviter`
-                        AND A.`status` = 1
-                        ".$limitString;
-
-                $query = $this->db->query($sql);
-                $result = $query->result();
-                
-                if ($query->num_rows() > 0)
-                {
-                    $this->cf_cache->write($result, 'friends_' . $user, 3600);
-                    return $result;
-                }
-                else
-                    return FALSE;
-            }
-            return $result;
-        }
 
         /**
 	 * get user by id

@@ -31,15 +31,15 @@ class encryption{
         // Use only printable characters from the ASCII table.
         // Do not use single quote, double quote or backslash as these have special meanings in PHP.
         // Each character can only appear once in each string.
-        $this->scramble1 = '! #$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-        $this->scramble2 = 'f^jAE]okIOzU[2&q1{3`h5w_794p@6s8?BgP>dFV=m D<TcS%Ze|r:lGK/uCy.Jx)HiQ!#$~(;Lt-R}Ma,NvW+Ynb*0X';
+        $this->scramble1 = '! #$%&()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+        $this->scramble2 = 'f^jAE]okIOzU[2&q1{3`h5w_794p6s8?BgP>dFV=m D<TcS%Ze|r:lGK/uCy.Jx)HiQ!#$~(;Lt-R}Ma,NvW+Ynb*0X';
 
         if (strlen($this->scramble1) <> strlen($this->scramble2)) {
             trigger_error('** SCRAMBLE1 is not same length as SCRAMBLE2 **', E_USER_ERROR);
         } // if
 
-        $this->adj = 1.75;  // this value is added to the rolling fudgefactors
-        $this->mod = 3;     // if divisible by this the adjustment is made negative
+        $this->adj = 5;  // this value is added to the rolling fudgefactors
+        $this->mod = 9;     // if divisible by this the adjustment is made negative
 
         //init the key for encryption form config file
         $this->key =  $key;

@@ -21,10 +21,11 @@
             <?= $lang['core_social_wait_for_accept_by_me'] ?>
         <?php elseif($relation_status == 'related'): ?>
             <?= $lang['core_social_related'] ?>
+            <?= anchor('core/social/remove_friend/'.$encryption->encrypt($partner->id),$lang['core_social_remove_friend']); ?>
         <?php elseif($relation_status == 'reject'): ?>
             <?= $lang['core_social_rejected_request'] ?>
         <?php elseif($relation_status == 'request'): ?>
-            <?= anchor('core/social/add_friend',$lang['core_social_request_friend']); ?>
+            <?= anchor('core/social/add_friend/'.$encryption->encrypt($partner->id),$lang['core_social_request_friend']); ?>
         <?php endif; ?>
     </div>
 </div>
