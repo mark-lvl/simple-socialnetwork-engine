@@ -176,11 +176,28 @@ class Cf_user {
 	 * @param <INT> $anotherUser id of partner user
 	 * @return <BOOL> true if is related
 	 */
-        function get_relation_status($user, $anotherUser)
-        {
-            $this->ci->load->model('core/cf_user_model');
+		function get_relation_status($user, $anotherUser)
+		{
+			$this->ci->load->model('core/cf_user_model');
 
-            return $this->ci->cf_user_model->get_relation_status($user, $anotherUser);
-        }
+			return $this->ci->cf_user_model->get_relation_status($user, $anotherUser);
+		}
+
+	/**
+     * find or search users with desired name (with limitation)
+	 * @param <STRING> $tableName the name of user's table
+	 * @param <STRING> $extraTable the name of user's table extra fields
+	 * @param <INT> $user id of authenticated user
+	 * @param <INT> $anotherUser id of partner user
+	 * @param <STRING> $filter a slice of user's name
+	 * @return <ARRAY> return desired users by filter
+	 */
+	function find_users($filter = "", $offset = 0, $limit = 8 )
+	{
+		$this->ci->load->model('core/cf_user_model');
+
+		return $this->ci->cf_user_model->get_desire_users($this->_userTable, $this->_extraTableName, $offset, $limit, $filter);
+
+	}
 
 }

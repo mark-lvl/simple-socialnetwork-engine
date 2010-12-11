@@ -93,6 +93,7 @@ class Cf_user_model extends Model {
 	 * get user by id
 	 * @param <INT> $id
 	 * @param <STRING> $tableName the name of user's table
+	 * @param <STRING> $extraTable the name of user's table extra fields
 	 * @return <BOOL> user object/FALSE
 	 */
 	function get_user_by_id($id, $tableName, $extraTable)
@@ -120,48 +121,76 @@ class Cf_user_model extends Model {
 	 * @return <INT> 0:if request on wait,1:if req is accept,2:if req is rejected
 	 */
 	function get_relation_status($user, $anotherUser)
-        {
-            if($user == $anotherUser)
-                return TRUE;
+	{
+		if($user == $anotherUser)
+			return TRUE;
 
-            $sql = "SELECT * FROM `relations` 
-                    WHERE (`inviter` = " . $this->db->escape($user) . "
-                        AND `guest` = " . $this->db->escape($anotherUser) . ")
-                    OR (`inviter` = " . $this->db->escape($anotherUser) . "
-                        AND `guest` = " . $this->db->escape($user) . ")";
+		$sql = "SELECT * FROM `relations`
+				WHERE (`inviter` = " . $this->db->escape($user) . "
+					AND `guest` = " . $this->db->escape($anotherUser) . ")
+				OR (`inviter` = " . $this->db->escape($anotherUser) . "
+					AND `guest` = " . $this->db->escape($user) . ")";
 
-            $result = $this->db->query($sql);
-            $result = $result->result_array();
+		$result = $this->db->query($sql);
+		$result = $result->result_array();
 
-            $statusHolder = '';
+		$statusHolder = '';
 
-            if(count($result) > 0)
-                foreach ($result as $res)
-                {
-                    switch ($res['status'])
-                    {
-                        case 0:
-                                if($res['inviter'] == $user && $statusHolder != 'related')
-                                    $statusHolder = 'waiting';
-                                elseif($statusHolder != 'related')
-                                    $statusHolder = 'waitForMe';
-                        break;
-                        case 1:
-                            $statusHolder = 'related';
-                        break;
-                        case 2:
-                            if($statusHolder != 'related')
-                            {
-                                if($res['inviter'] == $user)
-                                    $statusHolder = 'reject';
-                                elseif($res['guest'] == $user && $statusHolder != 'waiting' && $statusHolder != 'reject')
-                                    $statusHolder = 'request';
-                            }
-                        break;
-                    }
-                }
-                if($statusHolder == '')
-                    $statusHolder = 'request';
-            return $statusHolder;
-        }
+		if(count($result) > 0)
+			foreach ($result as $res)
+			{
+				switch ($res['status'])
+				{
+					case 0:
+							if($res['inviter'] == $user && $statusHolder != 'related')
+								$statusHolder = 'waiting';
+							elseif($statusHolder != 'related')
+								$statusHolder = 'waitForMe';
+					break;
+					case 1:
+						$statusHolder = 'related';
+					break;
+					case 2:
+						if($statusHolder != 'related')
+						{
+							if($res['inviter'] == $user)
+								$statusHolder = 'reject';
+							elseif($res['guest'] == $user && $statusHolder != 'waiting' && $statusHolder != 'reject')
+								$statusHolder = 'request';
+						}
+					break;
+				}
+			}
+			if($statusHolder == '')
+				$statusHolder = 'request';
+		return $statusHolder;
+	}
+
+	/**
+	 * find or search users with desired name (with limitation)
+	 * @param <STRING> $tableName the name of user's table
+	 * @param <STRING> $extraTable the name of user's table extra fields
+	 * @param <INT> $user id of authenticated user
+	 * @param <INT> $anotherUser id of partner user
+	 * @param <STRING> $filter a slice of user's name
+	 * @return <ARRAY> return desired users by filter
+	 */
+	function get_desire_users($tableName, $extraTable, $offset = 0, $limit = 8, $filter = "" )
+	{
+		$this->db->select('*');
+		$this->db->from($tableName);
+
+		if(!empty ($extraTable))
+			$this->db->join($extraTable, $extraTable . '.user_id = ' . $tableName . '.id');
+
+		if($filter != "")
+			$users = $this->db->like("CONCAT(".$tableName.".first_name, ' ', ".$tableName.".last_name)" , $filter)
+							  ->limit($limit,$offset)
+							  ->get()->result();
+		else
+			$users= $this->db->limit($limit,$offset)->get()->result();
+
+            if($users)
+                return $users;
+	}
 }

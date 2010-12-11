@@ -76,7 +76,7 @@ class Profile extends Base_Controller {
         $this->render();
     }
 
-    function edit()
+   function edit()
    {
         $this->lang->load('labels','persian');
         $this->lang->load('content','persian');
@@ -86,7 +86,7 @@ class Profile extends Base_Controller {
         $this->load->library('form_validation');
         $this->load->library('cf_authentication');
         $this->load->library('cf_user');
-        
+
         $this->data['user'] = $this->cf_authentication->is_user();
 
         if(!$this->data['user'])
@@ -110,6 +110,16 @@ class Profile extends Base_Controller {
             redirect('core/registration/login');
 
         $this->data['title'] = $this->data['lang']['title_profile_edit'];
+
+        $this->render();
+    }
+
+
+   function search()
+   {
+        $this->load->library('cf_user');
+
+		var_dump($this->cf_user->find_users('first',0,2));exit;
 
         $this->render();
     }
