@@ -63,13 +63,14 @@ class Cf_authentication {
 	 */
 	function is_user($username = "", $password = "")
         {
+
             if (!$username && !$password)
             {
                 if ($this->ci->session->userdata('logged_in'))
                     return (object) $this->ci->session->userdata;
             }
             if ($username == $this->ci->session->userdata('email') && $this->ci->session->userdata('logged_in'))
-                return (object) $this->ci->session->userdata;
+				return (object) $this->ci->session->userdata;
             else
             {
                 $this->ci->load->library("cf_security");

@@ -5,6 +5,8 @@ if (!defined('BASEPATH'))
 class Cf_social{
     
 	private $ci;
+	private $_userTable;
+	private $_extraTableName;
 
         //this flag set the number of a user can send friend request for all time
 	private $friend_request_limitation;
@@ -12,15 +14,17 @@ class Cf_social{
 	/**
 	 * Constructor - Initializes and references CI
 	 */
-	function Cf_social() {
+	function Cf_social()
+	{
 		$this->ci = & get_instance();
 		$this->friend_request_limitation = $this->ci->config->item('_friend_request_limitation');
+		$this->_userTable =  $this->ci->config->item('_core_user_table_name');
+		$this->_extraTableName = $this->ci->config->item('_core_user_profile_table_name');
 
-                $this->ci->load->model('core/cf_social_model');
-
+		$this->ci->load->model('core/cf_social_model');
 	}
 
-        /**
+	/**
 	 * check the limitation of sending request friend for each user
 	 * @param <ONJECT> logged in user object
 	 * @return <BOOL> FALSE over limitation and cant send request/TRUE can send
@@ -123,4 +127,21 @@ class Cf_social{
                                                                 $secure,
                                                                 $status);
         }
+
+
+	/**
+	 * get all user's messages with desire field
+	 * @param <OBJECT> $from_id the message sender's id
+	 * @param <STRING/ARRAY> one field or more field to select form sender information
+	 * @param <STRING/ARRAY> one or more field selected form extra field from sender information
+	 * @return <ARRAY> result
+	 */
+	function get_all_messages($user,$userField = 'first_name', $extraField = '')
+	{
+		return $this->ci->cf_social_model->get_all_messages($user,
+															$this->_userTable,
+															$this->_extraTableName,
+															$userField,
+															$extraField);
+	}
 }

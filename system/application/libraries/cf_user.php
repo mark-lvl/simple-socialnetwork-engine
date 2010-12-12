@@ -3,9 +3,9 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Cf_user {
 	private $ci;
-        private $_userTable;
-        private $_extraTableName;
-        private $_extraFields;
+	private $_userTable;
+	private $_extraTableName;
+	private $_extraFields;
 	/**
 	 * Constructor - Initializes and references CI
 	 */

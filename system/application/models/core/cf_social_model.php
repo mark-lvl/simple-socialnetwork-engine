@@ -148,34 +148,125 @@ class Cf_social_model extends Model {
 	 * @return <BOOL> success/failed process
 	 */
 	function send_message($from_id, $to_id, $title, $body, $type, $secure = TRUE, $status = 0)
-        {
-            if ($secure)
-                $sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status` , `type`)
-                        VALUES(" .  $this->db->escape($from_id) . ", " .
-                                    $this->db->escape($to_id) . ", '" .
-                                    date("Y-m-d H:i:s") . "', " .
-                                    $this->db->escape(strip_tags($body)) . ",'" .
-                                    $_SERVER['REMOTE_ADDR'] . "'," .
-                                    $this->db->escape($title) . "," .
-                                    (int)$status . "," .
-                                    $type .
-                        ")";
-            else
-                $sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status`, `type`)
-                        VALUES(" .  $this->db->escape($from_id) . ", " .
-                                    $this->db->escape($to_id) . ", '" .
-                                    date("Y-m-d H:i:s") . "', " .
-                                    $this->db->escape($body) . ",'" .
-                                    $_SERVER['REMOTE_ADDR'] . "'," .
-                                    $this->db->escape($title) . "," .
-                                    (int)$status . "," .
-                                    $type.
-                        ")";
+	{
+		if ($secure)
+			$sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status` , `type`)
+					VALUES(" .  $this->db->escape($from_id) . ", " .
+								$this->db->escape($to_id) . ", '" .
+								date("Y-m-d H:i:s") . "', " .
+								$this->db->escape(strip_tags($body)) . ",'" .
+								$_SERVER['REMOTE_ADDR'] . "'," .
+								$this->db->escape($title) . "," .
+								(int)$status . "," .
+								$type .
+					")";
+		else
+			$sql = "INSERT INTO messages (`from`, `to`, `date`, `message`,`ip`,`title`, `status`, `type`)
+					VALUES(" .  $this->db->escape($from_id) . ", " .
+								$this->db->escape($to_id) . ", '" .
+								date("Y-m-d H:i:s") . "', " .
+								$this->db->escape($body) . ",'" .
+								$_SERVER['REMOTE_ADDR'] . "'," .
+								$this->db->escape($title) . "," .
+								(int)$status . "," .
+								$type.
+					")";
 
-            
-            if ($this->db->query($sql)) 
-                return TRUE;
-            else
-                return FALSE;
+
+		if ($this->db->query($sql))
+			return TRUE;
+		else
+			return FALSE;
+	}
+
+
+   /**
+	 * get all user's messages with desire field
+	 * @param <OBJECT> $from_id the message sender's id
+     * @param <STRING> $tableName the name of user's table
+	 * @param <STRING> $extraTable the name of user's table extra fields
+	 * @param <STRING/ARRAY> one field or more field to select form sender information
+	 * @param <STRING/ARRAY> one or more field selected form extra field from sender information
+	 * @return <ARRAY> result
+	 */
+	function get_all_messages($user, $userTable,$extraTable,$userField = 'first_name', $extraField = '')
+	{
+		$this->db->select('messages.*');
+
+		if(!is_array($userField))
+			$this->db->select($userField);
+		else
+			$this->db->select(implode($userField, ','));
+
+		if($extraField != "")
+			if(is_array($extraField))
+				$this->db->select(implode($extraField, ','));
+			else
+				$this->db->select($extraField);
+
+		$this->db->from($userTable);
+		$this->db->join('messages', 'messages.from = ' . $userTable . '.id');
+
+		if($extraField != "")
+			$this->db->join($extraTable, $extraTable.'.user_id = ' . $userTable . '.id');
+
+		$result = $this->db->where('messages.to',$user->id)->get()->result();
+		
+		if (count($result) > 0)
+			return $result;
+		else
+			return FALSE;
+    }
+
+    function get_unread_message($user) {
+        if (is_object($user))
+            $user = $user->id;
+        $sql = "SELECT A.id FROM `messages` A, `coaches` B, `teams` C
+                WHERE B.id = A.from
+                AND B.id = C.coach
+                AND `to` = " . $this->db->escape($user) . "
+                AND A.checked = 0
+                ORDER BY `id` DESC";
+
+        $result = $this->db->query($sql);
+        $result_count = $result->num_rows();
+
+        return $result_count;
+    }
+
+    function get_message($user, $id) {
+        $sql = "SELECT A.* FROM `messages` A WHERE `to` = " . $this->db->escape($user->id) . " AND id = " . $this->db->escape($id);
+        $result = $this->db->query($sql);
+        $result = $result->result_array();
+
+        if (count($result) > 0) {
+            $sql = "UPDATE `messages` SET checked = 1 WHERE id = " . $result[0]['id'];
+            $this->db->query($sql);
+            return $result;
+        } else {
+            return FALSE;
         }
+    }
+
+    function delete_message($user, $id) {
+        $sql = "DELETE FROM `messages` WHERE `to` = " . $this->db->escape($user->id) . " AND id = " . $this->db->escape($id);
+        $result = $this->db->query($sql);
+
+        if ($result) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function delete_all_message($user) {
+        $sql = "DELETE FROM `messages` WHERE `to` = " . $this->db->escape($user->id);
+        $result = $this->db->query($sql);
+
+        if ($result) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
 }

@@ -56,7 +56,7 @@ class Registration extends Base_Controller {
         {
             $this->load->library('cf_authentication');
             if($this->cf_authentication->login($_POST['email'], $_POST['password']))
-                redirect('core/profile');
+				redirect('core/profile');
             else
                 $this->data['message'] = $this->data['lang']['error_user_login_faild'];
         }
