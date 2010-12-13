@@ -130,18 +130,61 @@ class Cf_social{
 
 
 	/**
-	 * get all user's messages with desire field
+	 * get all user's messages or specific message with desire message id and also
+     * desire field from sender and reciever user
 	 * @param <OBJECT> $from_id the message sender's id
+     * @param <STRING> $tableName the name of user's table
+	 * @param <STRING> $extraTable the name of user's table extra fields
 	 * @param <STRING/ARRAY> one field or more field to select form sender information
 	 * @param <STRING/ARRAY> one or more field selected form extra field from sender information
+	 * @param <STRING/INT> $id determine fetch all message or only fetch one message with specific id
+	 * @param <BOOL> $checkUpdate with this parameter can update message's check falg to read message
 	 * @return <ARRAY> result
 	 */
-	function get_all_messages($user,$userField = 'first_name', $extraField = '')
+	function get_message($user,$userField = 'first_name', $extraField = '', $id = 'all', $checkUpdate = TRUE)
 	{
-		return $this->ci->cf_social_model->get_all_messages($user,
-															$this->_userTable,
-															$this->_extraTableName,
-															$userField,
-															$extraField);
+		$messages =  $this->ci->cf_social_model->get_message(	$user,
+																$this->_userTable,
+																$this->_extraTableName,
+																$userField,
+																$extraField,
+																$id);
+
+		if($messages)
+			if($id != 'all' && $checkUpdate == TRUE)
+				$this->ci->cf_social_model->check_readed_message($messages->id);
+
+		return $messages;
 	}
+
+	/**
+	 * get count of unreaded messages
+	 * @param <OBJECT> $user the object of logged user
+	 * @return <INT> count of unread messages
+	 */
+    function get_unread_message($user)
+	{
+		return $this->ci->cf_social_model->get_unread_message($user);
+    }
+
+	/**
+	 * delete desire message with id
+	 * @param <OBJECT> $user logged in user
+	 * @param <INT> $id desire id for fetch message
+	 * @return <BOOL> success/failed process
+	 */
+    function delete_message($user, $id)
+	{
+		return $this->ci->cf_social_model->delete_message($user, $id);
+    }
+
+	/**
+	 * delete all message from a user
+	 * @param <OBJECT> $user logged in user
+	 * @return <BOOL> success/failed process
+	 */
+    function delete_all_message($user)
+	{
+		return $this->ci->cf_social_model->delete_all_message($user);
+    }
 }

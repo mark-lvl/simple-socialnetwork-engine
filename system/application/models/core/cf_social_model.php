@@ -181,15 +181,22 @@ class Cf_social_model extends Model {
 
 
    /**
-	 * get all user's messages with desire field
+	 * get all user's messages or specific message with desire message id and also
+    *  desire field from sender and reciever user
 	 * @param <OBJECT> $from_id the message sender's id
      * @param <STRING> $tableName the name of user's table
 	 * @param <STRING> $extraTable the name of user's table extra fields
 	 * @param <STRING/ARRAY> one field or more field to select form sender information
 	 * @param <STRING/ARRAY> one or more field selected form extra field from sender information
+	 * @param <STRING/INT> $id determine fetch all message or only fetch one message with specific id
 	 * @return <ARRAY> result
 	 */
-	function get_all_messages($user, $userTable,$extraTable,$userField = 'first_name', $extraField = '')
+	function get_message($user, 
+						 $userTable,
+						 $extraTable,
+						 $userField = 'first_name',
+						 $extraField = '',
+						 $id = 'all')
 	{
 		$this->db->select('messages.*');
 
@@ -210,7 +217,11 @@ class Cf_social_model extends Model {
 		if($extraField != "")
 			$this->db->join($extraTable, $extraTable.'.user_id = ' . $userTable . '.id');
 
-		$result = $this->db->where('messages.to',$user->id)->get()->result();
+		if($id == 'all')
+			$result = $this->db->where('messages.to',$user->id)->get()->result();
+		else
+			if(is_int($id))
+				$result = $this->db->where(array('messages.to' => $user->id, 'messages.id' => $id))->get()->row();
 		
 		if (count($result) > 0)
 			return $result;
@@ -218,37 +229,44 @@ class Cf_social_model extends Model {
 			return FALSE;
     }
 
-    function get_unread_message($user) {
+	/**
+	 * get count of unreaded messages
+	 * @param <OBJECT> $user the object of logged user
+	 * @return <INT> count of unread messages
+	 */
+    function get_unread_message($user)
+	{
         if (is_object($user))
             $user = $user->id;
-        $sql = "SELECT A.id FROM `messages` A, `coaches` B, `teams` C
-                WHERE B.id = A.from
-                AND B.id = C.coach
-                AND `to` = " . $this->db->escape($user) . "
-                AND A.checked = 0
-                ORDER BY `id` DESC";
+		
+        $sql = "SELECT count(id) AS counter FROM `messages` WHERE checked = 0";
 
-        $result = $this->db->query($sql);
-        $result_count = $result->num_rows();
-
-        return $result_count;
+        return $this->db->query($sql)->row()->counter;
     }
 
-    function get_message($user, $id) {
-        $sql = "SELECT A.* FROM `messages` A WHERE `to` = " . $this->db->escape($user->id) . " AND id = " . $this->db->escape($id);
-        $result = $this->db->query($sql);
-        $result = $result->result_array();
+	/**
+	 * update message check flag to read message
+	 * @param <INT> $id desire id for fetch message
+	 * @return <BOOL> success/failed process
+	 */
+	function check_readed_message($id)
+	{
+		$sql = "UPDATE `messages` SET checked = 1 WHERE id = " . (int) $id;
+		if($this->db->query($sql))
+			return TRUE;
+		else
+			return FALSE;
+	}
 
-        if (count($result) > 0) {
-            $sql = "UPDATE `messages` SET checked = 1 WHERE id = " . $result[0]['id'];
-            $this->db->query($sql);
-            return $result;
-        } else {
-            return FALSE;
-        }
-    }
 
-    function delete_message($user, $id) {
+	/**
+	 * delete desire message with id
+	 * @param <OBJECT> $user logged in user
+	 * @param <INT> $id desire id for fetch message
+	 * @return <BOOL> success/failed process
+	 */
+    function delete_message($user, $id)
+	{
         $sql = "DELETE FROM `messages` WHERE `to` = " . $this->db->escape($user->id) . " AND id = " . $this->db->escape($id);
         $result = $this->db->query($sql);
 
@@ -259,6 +277,11 @@ class Cf_social_model extends Model {
         }
     }
 
+	/**
+	 * delete all message from a user
+	 * @param <OBJECT> $user logged in user
+	 * @return <BOOL> success/failed process
+	 */
     function delete_all_message($user) {
         $sql = "DELETE FROM `messages` WHERE `to` = " . $this->db->escape($user->id);
         $result = $this->db->query($sql);

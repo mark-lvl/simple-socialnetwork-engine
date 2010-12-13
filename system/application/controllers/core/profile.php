@@ -34,7 +34,16 @@ class Profile extends Base_Controller {
         if(!$this->data['user'])
             redirect('core/registration/login');
 
+		$this->load->model('core/cf_social_model');
+/* for test
+		$mess = $this->cf_social->get_message($this->data['user'],
+											 $userField = 'first_name',
+											 $extraField = '',
+											 $id = 80,
+											 $checkUpdate = TRUE);
 
+		$mess = $this->cf_social->delete_all_message($this->data['user']);
+*/
         $this->data['lang'] = $this->lang->language;
         $this->data['title'] = $this->data['lang']['title_profile'];
 
