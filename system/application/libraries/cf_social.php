@@ -187,4 +187,17 @@ class Cf_social{
 	{
 		return $this->ci->cf_social_model->delete_all_message($user);
     }
+
+	/**
+	 * get user status relation with other user
+	 * @param <INT> $user id of authenticated user
+	 * @param <INT> $anotherUser id of partner user
+	 * @return <BOOL> true if is related
+	 */
+	function get_relation_status($user, $anotherUser)
+	{
+		$this->ci->load->model('core/cf_user_model');
+
+		return $this->ci->cf_user_model->get_relation_status($user, $anotherUser);
+	}
 }

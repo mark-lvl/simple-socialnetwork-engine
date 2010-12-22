@@ -118,7 +118,7 @@ class CI_Encrypt {
 		$key = $this->get_key($key);
 		$enc = $this->_xor_encode($string, $key);
 	
-		if ($this->_mcrypt_exists === TRUE)
+		if ($this->_mcrypt_exists === FALSE)
 		{
 			$enc = $this->mcrypt_encode($enc, $key);
 		}

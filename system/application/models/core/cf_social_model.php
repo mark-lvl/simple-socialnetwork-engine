@@ -87,17 +87,17 @@ class Cf_social_model extends Model {
             if($cond)
                 $setStatus = 1;
             else
-                $setStatus = 3;
-            
+                $setStatus = 2;
+
             $sql = "UPDATE `relations` SET status = '".$setStatus."',
                                            answer_date = '" . date("Y-m-d H:i:s") . "'
-                    WHERE `guest` = '" . $demandant_id . "' AND `inviter` = " . $this->db->escape($user->id);
+                    WHERE `inviter` = '" . $demandant_id . "' AND `guest` = " . $this->db->escape($user->id);
 
             $existSql = "SELECT `id`
                          FROM `relations`
-                         WHERE `guest` = '" . $demandant_id . "'
-                         AND `inviter` = " . $this->db->escape($user->id) .
-                        "AND `status` = 0";
+                         WHERE `guest` = " . $this->db->escape($user->id) . "
+                         AND `inviter` = '" . $demandant_id ."'
+						 AND `status` = 0";
 
             if ($this->db->query($existSql)->num_rows() && $this->db->query($sql))
                 return TRUE;
