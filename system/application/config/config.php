@@ -123,7 +123,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-=';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_/-=\+*';
 
 
 /*
@@ -218,7 +218,7 @@ $config['cache_default_expires'] = 3600;
 | enabled you MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = "mySalt";
+$config['encryption_key'] = "";
 
 /*
 |--------------------------------------------------------------------------

@@ -21,6 +21,7 @@ class Profile extends Base_Controller {
         //append js to layout
         $this->add_js('jquery');
         $this->add_js('jquery.boxy');
+		
     }
 
     function index()
@@ -52,26 +53,27 @@ class Profile extends Base_Controller {
 
     function view($hashedId)
     {
-        
+
         $this->load->library('cf_authentication');
         $this->load->library('cf_user');
         $this->load->library('cf_social');
         $this->data['user'] = $this->cf_authentication->is_user();
  
         //if user_id to view is equal with logged user_id
-        if($this->data['user']->id == $this->encryption->decrypt($hashedId))
+		$partner_id = $this->encrypt->my_decode($hashedId);
+
+        if($this->data['user']->id == $partner_id)
             redirect('core/profile');
 
         //the partner user profile details
-        $this->data['partner'] = $this->cf_user->get_user_by_id($this->encryption->decrypt($hashedId),
+        $this->data['partner'] = $this->cf_user->get_user_by_id($partner_id,
                                                                 $this->_userTable);
 
         $this->data['friends'] = $this->cf_social->get_friends($this->data['partner'],
                                                                   $this->config->item('_core_profile_number_freinds'));
 
         //status between the logged_user and partner
-        $this->data['relation_status'] = $this->cf_user->get_relation_status($this->data['user']->id,
-                                                                             $this->encryption->decrypt($hashedId));
+        $this->data['relation_status'] = $this->cf_social->get_relation_status($this->data['user']->id,$partner_id);
 
         if(!$this->data['user'])
             redirect('core/registration/login');

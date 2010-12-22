@@ -5,7 +5,6 @@ class Base_Controller extends Controller {
     protected $data = array();
     protected $controller_name;
     protected $action_name;
-    protected $encryption;
 
     public function __construct()
     {
@@ -15,10 +14,6 @@ class Base_Controller extends Controller {
         $this->lang->load('titles','persian');
         $this->lang->load('errors','persian');
         $this->data['lang'] = $this->lang->language;
-
-        //create a object from core encryption class
-        $this->encryption = new encryption($this->config->item('encryption_key'));
-        $this->data['encryption'] = $this->encryption;
 
         $this->load_defaults();
         }

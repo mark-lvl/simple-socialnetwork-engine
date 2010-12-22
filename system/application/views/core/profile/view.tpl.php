@@ -11,7 +11,7 @@
         <?php
         if(is_array($friends))
         foreach($friends AS $f): ?>
-            <?= anchor('core/profile/view/'.$encryption->encrypt($f->id), $f->first_name." ".$f->last_name) ?><br/>
+            <?= anchor('core/profile/view/'.$this->encrypt->my_encode($f->id), $f->first_name." ".$f->last_name) ?><br/>
         <?php endforeach; ?>
     </div>
     <div class="social_action">
@@ -21,11 +21,11 @@
             <?= $lang['core_social_wait_for_accept_by_me'] ?>
         <?php elseif($relation_status == 'related'): ?>
             <?= $lang['core_social_related'] ?>
-            <?= anchor('core/social/remove_friend/'.$encryption->encrypt($partner->id),$lang['core_social_remove_friend']); ?>
+            <?= anchor('core/social/remove_friend/'.$this->encrypt->my_encode($partner->id),$lang['core_social_remove_friend']); ?>
         <?php elseif($relation_status == 'reject'): ?>
             <?= $lang['core_social_rejected_request'] ?>
         <?php elseif($relation_status == 'request'): ?>
-            <?= anchor('core/social/add_friend/'.$encryption->encrypt($partner->id),$lang['core_social_request_friend']); ?>
+            <?= anchor('core/social/add_friend/'.$this->encrypt->my_encode($partner->id),$lang['core_social_request_friend']); ?>
         <?php endif; ?>
     </div>
 </div>
