@@ -23,6 +23,12 @@ class Profile extends Base_Controller {
         $this->add_js('jquery.boxy');
 		
     }
+	function test()
+	{
+		$this->data['user'] = $this->userAcl();
+		$this->load->library('cf_social');
+		$this->cf_social->request_apply($this->data['user'],4,TRUE);
+	}
 
     function index()
     {

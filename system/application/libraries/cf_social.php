@@ -73,13 +73,20 @@ class Cf_social{
 	 * @param <BOOL> $cond true for accept request and FALSE for reject that
 	 * @return <BOOL> success/failed process
 	 */
-        function request_apply($user, $demandant_id, $cond)
-        {
-            if ($user->id == $demandant_id)
-                return FALSE;
+	function request_apply($user, $demandant_id, $cond)
+	{
+		if ($user->id == $demandant_id)
+			return FALSE;
 
-            return $this->ci->cf_social_model->request_apply($user, $demandant_id, $cond);
-        }
+		if($this->ci->cf_social_model->request_apply($user, $demandant_id, $cond))
+		{
+			//remove friend cache for both user for regererate that
+			$this->ci->cf_cache->delete('friends_' . $user->id.'_*');
+			$this->ci->cf_cache->delete('friends_' . $demandant_id.'_*');
+			return TRUE;
+		}
+		return FALSE;
+	}
 
         /**
 	 * get user friends and set limitation for get or select all

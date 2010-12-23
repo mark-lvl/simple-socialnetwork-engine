@@ -358,7 +358,15 @@ class Cf_cache
 
 		$file_path = $this->path.$this->filename.'.cache';
 
-		if (file_exists($file_path)) unlink($file_path);
+		//remove cahce file if wildcard is used for filename
+		if(strpos($file_path, '*'))
+		{
+			$file_path = glob($file_path);
+			foreach ($file_path as $file)
+				unlink($file);
+		}
+		else
+			if (file_exists($file_path)) unlink($file_path);
 
 		// Reset values
 		$this->_reset();
